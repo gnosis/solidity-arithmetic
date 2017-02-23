@@ -11,9 +11,9 @@ library Arithmetic {
         uint bhi = b >> 128;
         uint blo = b & 2**128-1;
         ab0 = alo * blo;
-        ab1 = ahi * blo + alo * bhi;
-        ab32 = ahi * bhi + (ab1 >> 128);
-        ab1 = (ab1 & 2**128-1) + (ab0 >> 128);
+        ab1 = ((ahi * blo + alo * bhi) & 2**128-1) + (ab0 >> 128);
+        ab32 = ahi * bhi + (ahi * blo >> 128) + (alo * bhi >> 128) + (ab1 >> 128);
+        ab1 &= 2**128-1;
         ab0 &= 2**128-1;
     }
 
