@@ -29,8 +29,13 @@ contract TestArithmetic {
             0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000,
             0xffffffffffffffffffffffffffffffff, 0xffffffffffffffffffffffffffff0000);
 
-        q.equal(0xc47295bac47295bac47295bac47295ba, "stuff");
-        r.equal(0xc47295bac47295bac47295bac47295b9ffffffffffffffffffffffffffff3b8d, "and things");
+        q.equal(0xc47295bac47295bac47295bac47295ba, "wrong quotient");
+        r.equal(0xc47295bac47295bac47295bac47295b9ffffffffffffffffffffffffffff3b8d, "wrong remainder");
+
+        (q, r) = Arithmetic.div256_128By128_128(2**256-1, 2**128-1, 2**256-1, 2**128-1, 2**128-1);
+
+        q.equal(2**128, "wrong quotient for maximal division args");
+        r.equal(2**128-1, "wrong remainder for maximal division args");
     }
 
     function testOverflowResistantFraction() {

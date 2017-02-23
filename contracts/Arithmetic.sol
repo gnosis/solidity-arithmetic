@@ -24,34 +24,38 @@ library Arithmetic {
         constant
         returns (uint q, uint r)
     {
+        uint qhi = (a21 / b) << 128;
+        a21 %= b;
+
+        uint rhi;
         if(a21 >> 128 < b1) {
             q = a21 / b1;
-            r = a21 % b1;
+            rhi = a21 % b1;
         } else {
             q = 2**128-1;
-            r = a21 - (b1 << 128) + b1;
+            rhi = a21 - (b1 << 128) + b1;
         }
 
-        uint rsub = q * b0;
+        uint rsub0 = (q & 2**128-1) * b0;
+        uint rsub21 = (q >> 128) * b0 + (rsub0 >> 128);
+        rsub0 &= 2**128-1;
 
-        if(r >= 2**128) {
-            r = (r << 128) + a0 - rsub;
-        } else {
-            r = (r << 128) + a0;
-            if(rsub > r) {
-                q--;
-                if(rsub >= b) {
-                    rsub -= b;
-                    if(rsub > r) {
-                        q--;
-                        rsub -= b;
-                    }
-                } else {
-                    rsub -= b;
-                }
-            }
-            r -= rsub;
+        if(rsub21 > rhi || rsub21 == rhi && rsub0 > a0) {
+            q--;
+            a0 += b0;
+            rhi += b1 + (a0 >> 128);
+            a0 &= 2**128-1;
         }
+
+        if(rsub21 > rhi || rsub21 == rhi && rsub0 > a0) {
+            q--;
+            a0 += b0;
+            rhi += b1 + (a0 >> 128);
+            a0 &= 2**128-1;
+        }
+
+        q += qhi;
+        r = ((rhi - rsub21) << 128) + a0 - rsub0;
     }
 
     function overflowResistantFraction(uint a, uint b, uint divisor)
