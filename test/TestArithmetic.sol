@@ -20,6 +20,14 @@ contract TestArithmetic {
         ab32.equal(2**256-2, "high 256 bits of max product wrong");
         ab1.equal(0, "next 128 bits of max product wrong");
         ab0.equal(1, "low 128 bits of max product wrong");
+
+        (ab32, ab1, ab0) = Arithmetic.mul256By256(
+            0x9014f6307009d2d5df0cb71c7f97859a04b335daea24bdf92e515f149837a8e6,
+            0xd72618b69d8c48d5d775dc419ecfc219551e515f3af0963ad4688920ce79c269
+        );
+        ab32.equal(0x79170bc7f7f041e813f86c6c7852db20d88f13727f2e083410a19526a57f22ba, "high bits of some product wrong");
+        ab1.equal(0x4f96f469620c8051bfc75631846830fb, "next bits of some product wrong");
+        ab0.equal(0x0b08e4d8c0c1fde6126e89c485889256, "next bits of some product wrong");
     }
 
     function testDiv256_128By128_128() {
