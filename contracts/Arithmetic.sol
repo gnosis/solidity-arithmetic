@@ -40,11 +40,15 @@ library Arithmetic {
             r = (r << 128) + a0;
             if(rsub > r) {
                 q--;
-                rsub -= b;
-            }
-            if(rsub > r) {
-                q--;
-                rsub -= b;
+                if(rsub >= b) {
+                    rsub -= b;
+                    if(rsub > r) {
+                        q--;
+                        rsub -= b;
+                    }
+                } else {
+                    rsub -= b;
+                }
             }
             r -= rsub;
         }
