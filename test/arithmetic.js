@@ -3,17 +3,10 @@ BigNumber.config({
     ROUNDING_MODE: BigNumber.ROUND_FLOOR
 });
 
-let crypto;
-try {
-    crypto = require('crypto');
-} catch (err) {
-    console.log('crypto support is disabled!');
-}
+let crypto = require('crypto');
 
 function rand256BitBigNumber() {
-    if (crypto) {
-        return new BigNumber(crypto.randomBytes(32).toString('hex'), 16);
-    }
+    return new BigNumber(crypto.randomBytes(32).toString('hex'), 16);
 }
 
 var Arithmetic = artifacts.require("./Arithmetic.sol");
@@ -27,7 +20,8 @@ contract('Arithmetic', function(accounts) {
             return Arithmetic.deployed().then(function(instance) {
                 return instance.overflowResistantFraction.call(a, b, d);
             }).then(function(c) {
-                assert(c.equals(a.times(b).divToInt(d)), `0x${c.toString(16)} != 0x${a.toString(16)} * 0x${b.toString(16)} / 0x${d.toString(16)}"`);
+                var res = a.times(b).divToInt(d);
+                assert(c.equals(res), `Contract value doesn't match BigNumber value:\n0x${c.toString(16)} !=\n0x${res.toString(16)}\n(\n 0x${a.toString(16)} *\n 0x${b.toString(16)} /\n 0x${d.toString(16)}\n)`);
             });
         });
     }
