@@ -44,6 +44,15 @@ contract TestArithmetic {
 
         q.equal(2**128, "wrong quotient for maximal division args");
         r.equal(2**128-1, "wrong remainder for maximal division args");
+
+        (q, r) = Arithmetic.div256_128By128_128(
+            0xc14e772707388bb8558b1b24b0dd11f6cf50f61fcc9ad3e671189b2bc28270a7,
+            0x4ad41f3028d19ee5b1058090facc4f6a,
+            0xc21d87c491ba579f4cfbd2a65e868eca4e7f0ac566709f92998f26fdb0777c7,
+            0xc21d87c491ba579f4cfbd2a65e868ec, 0xa4e7f0ac566709f92998f26fdb0777c7);
+
+        q.equal(0xfeeeec0de9b8e3642b7e41db43cd76305, "wrong quotient for some division");
+        r.equal(0x4cb9d73e6c7e49b14dde63623d22354587735d56d2be2a21ff30c6994340387, "wrong remainder for some division");
     }
 
     function testOverflowResistantFraction() {

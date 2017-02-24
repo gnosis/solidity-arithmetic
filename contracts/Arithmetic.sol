@@ -40,14 +40,7 @@ library Arithmetic {
         uint rsub21 = (q >> 128) * b0 + (rsub0 >> 128);
         rsub0 &= 2**128-1;
 
-        if(rsub21 > rhi || rsub21 == rhi && rsub0 > a0) {
-            q--;
-            a0 += b0;
-            rhi += b1 + (a0 >> 128);
-            a0 &= 2**128-1;
-        }
-
-        if(rsub21 > rhi || rsub21 == rhi && rsub0 > a0) {
+        while(rsub21 > rhi || rsub21 == rhi && rsub0 > a0) {
             q--;
             a0 += b0;
             rhi += b1 + (a0 >> 128);
