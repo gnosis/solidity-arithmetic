@@ -20,12 +20,20 @@ library Arithmetic {
     // I adapted this from Fast Division of Large Integers by Karl Hasselström
     // Algorithm 3.4: Divide-and-conquer division (3 by 2)
     // Karl got it from Burnikel and Ziegler and the GMP lib implementation
-    function div256_128By128_128(uint a21, uint a0, uint b, uint b1, uint b0)
+    function div256_128By256(uint a21, uint a0, uint b)
         constant
         returns (uint q, uint r)
     {
         uint qhi = (a21 / b) << 128;
         a21 %= b;
+
+        uint shift = 0;
+        while(b >> shift > 0) shift++;
+        shift = 256 - shift;
+        a21 = (a21 << shift) + (shift > 128 ? a0 << (shift - 128) : a0 >> (128 - shift));
+        a0 = (a0 << shift) & 2**128-1;
+        b <<= shift;
+        var (b1, b0) = (b >> 128, b & 2**128-1);
 
         uint rhi;
         if(a21 >> 128 < b1) {
@@ -48,7 +56,7 @@ library Arithmetic {
         }
 
         q += qhi;
-        r = ((rhi - rsub21) << 128) + a0 - rsub0;
+        r = (((rhi - rsub21) << 128) + a0 - rsub0) >> shift;
     }
 
     function overflowResistantFraction(uint a, uint b, uint divisor)
@@ -59,9 +67,8 @@ library Arithmetic {
             return a * b / divisor;
         } else {
             (ab32_q1, ab1_r1, ab0) = mul256By256(a, b);
-            (a, b) = (divisor >> 128, divisor & 2**128-1);
-            (ab32_q1, ab1_r1) = div256_128By128_128(ab32_q1, ab1_r1, divisor, a, b);
-            (a, b) = div256_128By128_128(ab1_r1, ab0, divisor, a, b);
+            (ab32_q1, ab1_r1) = div256_128By256(ab32_q1, ab1_r1, divisor);
+            (a, b) = div256_128By256(ab1_r1, ab0, divisor);
             return (ab32_q1 << 128) + a;
         }
     }
