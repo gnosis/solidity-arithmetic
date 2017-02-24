@@ -17,10 +17,12 @@ var Arithmetic = artifacts.require("./Arithmetic.sol");
 const pow2To256 = new BigNumber(2).pow(256),
     pow2To128 = new BigNumber(2).pow(128);
 
+const numTimes = 100;
+
 contract('Arithmetic', function(accounts) {
-    it(`should calculate a * b correctly 100 times`, function() {
+    it(`should calculate a * b correctly ${numTimes} times`, function() {
         return Arithmetic.deployed().then(function(instance) {
-            return Promise.all([...Array(100)].map(function() {
+            return Promise.all([...Array(numTimes)].map(function() {
                 var a = rand256BitBigNumber(),
                     b = rand256BitBigNumber();
 
@@ -34,9 +36,9 @@ contract('Arithmetic', function(accounts) {
         });
     });
 
-    it(`should calculate a / b correctly 100 times`, function() {
+    it(`should calculate a / b correctly ${numTimes} times`, function() {
         return Arithmetic.deployed().then(function(instance) {
-            return Promise.all([...Array(100)].map(function() {
+            return Promise.all([...Array(numTimes)].map(function() {
                 var a21 = rand256BitBigNumber(),
                     a0 = rand128BitBigNumber(),
                     b1 = rand128BitBigNumber(),
@@ -53,14 +55,17 @@ contract('Arithmetic', function(accounts) {
         });
     });
 
-    it(`should calculate a * b / d correctly 100 times`, function() {
+    it(`should calculate a * b / d correctly ${numTimes} times`, function() {
         return Arithmetic.deployed().then(function(instance) {
-            return Promise.all([...Array(100)].map(function() {
+            return Promise.all([...Array(numTimes)].map(function() {
                 var a = rand256BitBigNumber(),
                     b = rand256BitBigNumber(),
                     d = rand256BitBigNumber();
                 return instance.overflowResistantFraction.call(a, b, d).then(function(c) {
                     var res = a.times(b).divToInt(d);
+                    // gotta truncate res
+                    res = res.sub(res.divToInt(pow2To256).mul(pow2To256));
+
                     assert(c.equals(res), `Contract value doesn't match BigNumber value:\n0x${c.toString(16)} !=\n0x${res.toString(16)}\nformat(\n 0x${a.toString(16)} *\n 0x${b.toString(16)} //\n 0x${d.toString(16)}\n, '02x')`);
                 });
             }));
