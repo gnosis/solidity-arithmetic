@@ -18,50 +18,52 @@ const pow2To256 = new BigNumber(2).pow(256),
     pow2To128 = new BigNumber(2).pow(128);
 
 contract('Arithmetic', function(accounts) {
-    for (var i = 1; i <= 10; i++) {
-        it(`should calculate a * b, try ${i}`, function() {
-            var a = rand256BitBigNumber(),
-                b = rand256BitBigNumber();
-            return Arithmetic.deployed().then(function(instance) {
-                return instance.mul256By256.call(a, b);
-            }).then(function(cvals) {
-                var res = a.times(b),
-                    c = cvals[0].times(pow2To256).plus(cvals[1].times(pow2To128)).plus(cvals[2]);
-                assert(c.equals(res), `Contract value doesn't match BigNumber value:\n0x${c.toString(16)} !=\n0x${res.toString(16)}\nformat(\n 0x${a.toString(16)} *\n 0x${b.toString(16)}\n, '02x')`);
-            });
-        });
-    }
+    it(`should calculate a * b correctly 100 times`, function() {
+        return Arithmetic.deployed().then(function(instance) {
+            return Promise.all([...Array(100)].map(function() {
+                var a = rand256BitBigNumber(),
+                    b = rand256BitBigNumber();
 
-    for (var i = 1; i <= 10; i++) {
-        it(`should calculate a / b, try ${i}`, function() {
-            var a21 = rand256BitBigNumber(),
-                a0 = rand128BitBigNumber(),
-                b1 = rand128BitBigNumber(),
-                b0 = rand128BitBigNumber(),
-                a = a21.times(pow2To128).plus(a0),
-                b = b1.times(pow2To128).plus(b0);
-            return Arithmetic.deployed().then(function(instance) {
-                return instance.div256_128By128_128.call(a21, a0, b, b1, b0);
-            }).then(function(qr) {
-                var resQ = a.divToInt(b),
-                    resR = a.mod(b);
-                assert(qr[0].equals(resQ), `Contract value doesn't match BigNumber value:\n0x${qr[0].toString(16)} !=\n0x${resQ.toString(16)}\nformat(\n 0x${a.toString(16)} //\n 0x${b.toString(16)}\n, '02x')`);
-                assert(qr[1].equals(resR), `Contract value doesn't match BigNumber value:\n0x${qr[1].toString(16)} !=\n0x${resQ.toString(16)}\nformat(\n 0x${a.toString(16)} %\n 0x${b.toString(16)}\n, '02x')`);
-            });
-        });
-    }
+                return instance.mul256By256.call(a, b).then(function(cvals) {
+                    var res = a.times(b),
+                        c = cvals[0].times(pow2To256).plus(cvals[1].times(pow2To128)).plus(cvals[2]);
 
-    for (var i = 1; i <= 1; i++) {
-        it(`should calculate a * b / d correctly, try ${i}`, function() {
-            var a = rand256BitBigNumber(),
-                b = rand256BitBigNumber(),
-                d = rand256BitBigNumber();
-            return Arithmetic.deployed().then(function(instance) {
-                return instance.overflowResistantFraction.call(a, b, d);
-            }).then(function(c) {
-                var res = a.times(b).divToInt(d);
-                assert(c.equals(res), `Contract value doesn't match BigNumber value:\n0x${c.toString(16)} !=\n0x${res.toString(16)}\nformat(\n 0x${a.toString(16)} *\n 0x${b.toString(16)} //\n 0x${d.toString(16)}\n, '02x')`);
-            });
+                    assert(c.equals(res), `Contract value doesn't match BigNumber value:\n0x${c.toString(16)} !=\n0x${res.toString(16)}\nformat(\n 0x${a.toString(16)} *\n 0x${b.toString(16)}\n, '02x')`);
+                });
+            }));
         });
-    }
+    });
+
+    it(`should calculate a / b correctly 100 times`, function() {
+        return Arithmetic.deployed().then(function(instance) {
+            return Promise.all([...Array(100)].map(function() {
+                var a21 = rand256BitBigNumber(),
+                    a0 = rand128BitBigNumber(),
+                    b1 = rand128BitBigNumber(),
+                    b0 = rand128BitBigNumber(),
+                    a = a21.times(pow2To128).plus(a0),
+                    b = b1.times(pow2To128).plus(b0);
+                return instance.div256_128By128_128.call(a21, a0, b, b1, b0).then(function(qr) {
+                    var resQ = a.divToInt(b),
+                        resR = a.mod(b);
+                    assert(qr[0].equals(resQ), `Contract value doesn't match BigNumber value:\n0x${qr[0].toString(16)} !=\n0x${resQ.toString(16)}\nformat(\n 0x${a.toString(16)} //\n 0x${b.toString(16)}\n, '02x')`);
+                    assert(qr[1].equals(resR), `Contract value doesn't match BigNumber value:\n0x${qr[1].toString(16)} !=\n0x${resQ.toString(16)}\nformat(\n 0x${a.toString(16)} %\n 0x${b.toString(16)}\n, '02x')`);
+                });
+            }));
+        });
+    });
+
+    it(`should calculate a * b / d correctly 100 times`, function() {
+        return Arithmetic.deployed().then(function(instance) {
+            return Promise.all([...Array(100)].map(function() {
+                var a = rand256BitBigNumber(),
+                    b = rand256BitBigNumber(),
+                    d = rand256BitBigNumber();
+                return instance.overflowResistantFraction.call(a, b, d).then(function(c) {
+                    var res = a.times(b).divToInt(d);
+                    assert(c.equals(res), `Contract value doesn't match BigNumber value:\n0x${c.toString(16)} !=\n0x${res.toString(16)}\nformat(\n 0x${a.toString(16)} *\n 0x${b.toString(16)} //\n 0x${d.toString(16)}\n, '02x')`);
+                });
+            }));
+        });
+    });
 });
