@@ -1,0 +1,20 @@
+{
+  "package_name": "arithmetic",
+  "version": "0.1.0",
+  "description": "A solidity library for performing arithmetic.",
+  "authors": [
+    "Alan Lu <alanlu1023@gmail.com>"
+  ],
+  "keywords": [
+    "ethereum",
+    "ethereum-contract",
+    "solidity",
+    "arithmetic",
+    "library",
+    "truffle",
+    "multiplication",
+    "division"
+  ],
+  "dependencies": {},
+  "license": "GPL-3.0"
+}

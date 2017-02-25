@@ -1,0 +1,37 @@
+{
+  "name": "solidity-arithmetic",
+  "version": "0.1.0",
+  "description": "A solidity library for performing arithmetic.",
+  "main": "truffle.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "bignumber.js": "^4.0.0",
+    "truffle-hdwallet-provider": "0.0.3"
+  },
+  "scripts": {
+    "test": "truffle test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gnosis/solidity-arithmetic.git"
+  },
+  "author": "Alan Lu",
+  "keywords": [
+    "ethereum",
+    "ethereum-contract",
+    "solidity",
+    "arithmetic",
+    "library",
+    "truffle",
+    "multiplication",
+    "division"
+  ],
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/gnosis/solidity-arithmetic/issues"
+  },
+  "homepage": "https://github.com/gnosis/solidity-arithmetic#readme"
+}
