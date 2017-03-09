@@ -36,13 +36,8 @@ library Arithmetic {
         var (b1, b0) = (b >> 128, b & 2**128-1);
 
         uint rhi;
-        if(a21 >> 128 < b1) {
-            q = a21 / b1;
-            rhi = a21 % b1;
-        } else {
-            q = 2**128-1;
-            rhi = a21 - (b1 << 128) + b1;
-        }
+        q = a21 / b1;
+        rhi = a21 % b1;
 
         uint rsub0 = (q & 2**128-1) * b0;
         uint rsub21 = (q >> 128) * b0 + (rsub0 >> 128);
