@@ -3,7 +3,7 @@ pragma solidity >=0.4.24 <0.6.0;
 // Arithmetic library
 library Arithmetic {
     function mul256By256(uint a, uint b)
-        pure public
+        internal pure
         returns (uint ab32, uint ab1, uint ab0)
     {
         uint ahi = a >> 128;
@@ -21,7 +21,7 @@ library Arithmetic {
     // Algorithm 3.4: Divide-and-conquer division (3 by 2)
     // Karl got it from Burnikel and Ziegler and the GMP lib implementation
     function div256_128By256(uint a21, uint a0, uint b)
-        pure public
+        internal pure
         returns (uint q, uint r)
     {
         uint qhi = (a21 / b) << 128;
@@ -55,7 +55,7 @@ library Arithmetic {
     }
 
     function overflowResistantFraction(uint a, uint b, uint divisor)
-        pure public
+        internal pure
         returns (uint)
     {
         uint ab32_q1; uint ab1_r1; uint ab0;
